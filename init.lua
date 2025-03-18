@@ -1,0 +1,70 @@
+vim.cmd("set expandtab")
+vim.cmd("set tabstop=2")
+vim.cmd("set softtabstop=2")
+vim.cmd("set shiftwidth=2")
+vim.cmd("set number")
+vim.cmd("set autoindent")
+vim.cmd("set smartindent")
+vim.cmd("filetype plugin indent on")
+vim.api.nvim_set_keymap("n", "gg", "gg=G", { noremap = true, silent = true })
+
+vim.g.mapleader = " "
+
+-- Setup Lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable",
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
+
+-- Ensure Lazy.nvim is properly loading `lua/plugins/`
+require("lazy").setup({ import = "plugins" })
+
+-- Keymaps
+vim.keymap.set('n', '<C-n>', ':Neotree toggle<CR>')
+
+-- Treesitter Configuration (after Lazy.nvim has loaded plugins)
+vim.defer_fn(function()
+  local ok, configs = pcall(require, "nvim-treesitter.configs")
+  if ok then
+    configs.setup {
+      ensure_installed = {
+        "lua", "vim", "vimdoc", "bash", "fish",
+        "json", "yaml", "toml", "ini",
+        "javascript", "typescript", "tsx",
+        "html", "css", "scss", "jsonc",
+        "python", "c", "cpp", "java", "go", "rust",
+        "kotlin", "scala", "zig", "nim",
+        "dockerfile", "make", "cmake", "ninja",
+        "terraform", "hcl",
+        "gitcommit", "gitignore", "gitattributes",
+        "markdown", "markdown_inline",
+        "xml", "csv", "tsv",
+        "mermaid",
+        "regex", "query", "comment"
+      },
+      highlight = { enable = true },
+      indent = { enable = true }
+    }
+  end
+end, 0)
+
+-- Telescope Keymaps
+vim.defer_fn(function()
+  local ok, builtin = pcall(require, "telescope.builtin")
+  if ok then
+    vim.keymap.set('n', '<C-p>', builtin.find_files, {})
+    vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
+  end
+end, 0)
+
+-- Colorscheme
+vim.cmd.colorscheme "catppuccin"
+
