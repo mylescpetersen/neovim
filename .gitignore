@@ -1,0 +1,10 @@
+# Ignore swap, backup, and undo files
+*.swp
+*.swo
+*.swn
+*.bak
+*.un~
+*.undo
+
+# Ignore Lazy.nvim plugins (if you install them in ~/.local/share/nvim)
+lazy-lock.json
